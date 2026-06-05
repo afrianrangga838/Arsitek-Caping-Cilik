@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab EtnoMath: Arsitek Caping Cilik</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #FDF8F0;
+  --bamboo: #82B878;
+  --bamboo-dark: #4A8A4F;
+  --bamboo-light: #C8E6C9;
+  --bamboo-xlight: #EBF5EB;
+  --brown: #9C6B3C;
+  --brown-light: #EDD5B8;
+  --orange: #E07030;
+  --orange-light: #FAEBD7;
+  --orange-vivid: #F08040;
+  --blue: #4A90C4;
+  --blue-light: #D0E8F8;
+  --yellow: #F0C040;
+  --yellow-light: #FFF8E0;
+  --white: #FFFFFF;
+  --text-dark: #2C2C2C;
+  --text-mid: #5A5A5A;
+  --text-soft: #8A8A8A;
+  --shadow: 0 8px 32px rgba(60,40,10,.10);
+  --shadow-sm: 0 2px 12px rgba(60,40,10,.07);
+  --r: 20px;
+  --r-sm: 12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--text-dark);overflow-x:hidden}
+
+/* ── NAVBAR ── */
+#navbar{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:rgba(253,248,240,.96);backdrop-filter:blur(14px);
+  border-bottom:2px solid var(--bamboo-light);
+  height:62px;padding:0 20px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  box-shadow:0 2px 14px rgba(60,40,10,.08);
+}
+.nav-brand{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0}
+.nav-logo{width:36px;height:36px;background:linear-gradient(135deg,var(--bamboo),var(--brown));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.nav-title{font-family:'Poppins',sans-serif;font-weight:900;font-size:15px;color:var(--bamboo-dark);line-height:1}
+.nav-title span{color:var(--orange)}
+
+.nav-menu{display:flex;align-items:center;gap:2px;flex:1;justify-content:center;flex-wrap:nowrap}
+.nbtn{padding:6px 11px;border-radius:50px;border:none;background:transparent;font-family:'Nunito',sans-serif;font-weight:700;font-size:12px;color:var(--text-mid);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.nbtn:hover{background:var(--bamboo-light);color:var(--bamboo-dark)}
+.nbtn.active{background:var(--bamboo);color:#fff}
+.nbtn.locked{color:var(--text-soft);cursor:not-allowed}
+.nbtn.locked:hover{background:transparent;color:var(--text-soft)}
+
+.nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.nav-uname{font-weight:800;font-size:12px;color:var(--brown);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:none}
+.prog-wrap{display:none;flex-direction:column;align-items:flex-end;gap:2px}
+.prog-lbl{font-size:10px;font-weight:800;color:var(--bamboo-dark)}
+.prog-bg{width:72px;height:7px;background:var(--bamboo-light);border-radius:50px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--bamboo),var(--bamboo-dark));border-radius:50px;width:0%;transition:width .6s ease}
+
+/* ── MODAL ── */
+.overlay{position:fixed;inset:0;background:rgba(20,10,0,.50);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(5px)}
+.overlay.show{display:flex;animation:fadein .2s ease}
+.modal{background:#fff;border-radius:var(--r);padding:40px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(60,40,10,.25);animation:slideup .3s ease}
+.modal h3{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:800;color:var(--bamboo-dark);margin-bottom:6px}
+.modal p{color:var(--text-mid);font-size:.93rem;margin-bottom:22px;line-height:1.55}
+.modal input[type=text]{width:100%;padding:13px 16px;border:2.5px solid var(--bamboo-light);border-radius:var(--r-sm);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;outline:none;transition:border .2s;color:var(--text-dark);background:var(--cream)}
+.modal input:focus{border-color:var(--bamboo)}
+.moji{font-size:48px;text-align:center;display:block;margin-bottom:14px}
+.m-actions{display:flex;gap:10px;margin-top:18px}
+
+/* ── BUTTONS ── */
+.btn-g{display:inline-flex;align-items:center;gap:7px;padding:14px 34px;background:linear-gradient(135deg,var(--bamboo),var(--bamboo-dark));color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:.95rem;border-radius:50px;border:none;cursor:pointer;transition:all .3s;box-shadow:0 5px 18px rgba(74,138,79,.32)}
+.btn-g:hover{transform:translateY(-3px);box-shadow:0 9px 26px rgba(74,138,79,.42)}
+.btn-o{display:inline-flex;align-items:center;gap:7px;padding:12px 28px;background:linear-gradient(135deg,var(--orange-vivid),var(--orange));color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:.92rem;border-radius:50px;border:none;cursor:pointer;transition:all .3s;box-shadow:0 5px 18px rgba(224,112,48,.28)}
+.btn-o:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(224,112,48,.38)}
+.btn-line{display:inline-flex;align-items:center;gap:7px;padding:11px 26px;background:transparent;color:var(--bamboo-dark);font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;border-radius:50px;border:2.5px solid var(--bamboo);cursor:pointer;transition:all .3s}
+.btn-line:hover{background:var(--bamboo);color:#fff}
+.btn-disabled{opacity:.55;pointer-events:none}
+
+/* ── SECTIONS ── */
+section{padding-top:80px}
+.swrap{max-width:920px;margin:0 auto;padding:56px 24px}
+.shdr{text-align:center;margin-bottom:44px}
+.stag{display:inline-block;padding:5px 15px;border-radius:50px;font-weight:800;font-size:11px;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:12px}
+.stag-g{background:var(--bamboo-light);color:var(--bamboo-dark)}
+.stag-o{background:var(--orange-light);color:var(--orange)}
+.stag-b{background:var(--blue-light);color:var(--blue)}
+.stag-y{background:var(--yellow-light);color:#a07000}
+.stag-br{background:var(--brown-light);color:var(--brown)}
+.stitle{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:900;color:var(--text-dark);margin-bottom:10px;line-height:1.2}
+.stitle .cg{color:var(--bamboo-dark)} .stitle .co{color:var(--orange)} .stitle .cb{color:var(--blue)}
+.sdesc{color:var(--text-mid);font-size:.97rem;max-width:600px;margin:0 auto;line-height:1.7}
+
+/* ── LANDING ── */
+#landing{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(150deg,#FDF8F0 0%,#ECF6EC 45%,#FFF7EE 100%);position:relative;overflow:hidden;padding-top:62px}
+.l-deco{position:absolute;border-radius:50%;opacity:.16;pointer-events:none}
+.d1{width:420px;height:420px;background:var(--bamboo);top:-110px;right:-110px}
+.d2{width:280px;height:280px;background:var(--orange);bottom:-80px;left:-70px}
+.d3{width:180px;height:180px;background:var(--yellow);top:42%;left:4%}
+.l-content{text-align:center;z-index:1;padding:40px 24px;max-width:700px}
+.badge{display:inline-block;background:var(--bamboo-light);color:var(--bamboo-dark);font-weight:800;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;padding:5px 16px;border-radius:50px;margin-bottom:18px;animation:fdin .7s ease both}
+.l-title{font-family:'Poppins',sans-serif;font-size:clamp(2rem,6vw,3.6rem);font-weight:900;line-height:1.1;margin-bottom:7px;animation:fdin .7s .1s ease both}
+.tagline{font-size:1.05rem;font-weight:700;color:var(--brown);margin-bottom:8px;animation:fdin .7s .18s ease both}
+.l-sub{font-size:.97rem;color:var(--text-mid);margin-bottom:34px;line-height:1.65;animation:fdin .7s .26s ease both}
+.hero-icon{font-size:96px;display:block;margin:0 auto 28px;animation:float 3.2s ease-in-out infinite,fadein .7s .35s ease both;filter:drop-shadow(0 10px 22px rgba(60,40,10,.17))}
+.cta-wrap{animation:fdup .7s .44s ease both}
+
+/* ── ALAT BAHAN ── */
+.ab-box{background:#fff;border-radius:var(--r);padding:26px 28px;box-shadow:var(--shadow-sm);border:2px solid var(--bamboo-light);margin-bottom:32px}
+.ab-title{font-family:'Poppins',sans-serif;font-weight:800;font-size:1rem;color:var(--bamboo-dark);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.ab-list{list-style:none;display:flex;flex-wrap:wrap;gap:10px}
+.ab-item{background:var(--bamboo-xlight);color:var(--bamboo-dark);font-weight:700;font-size:.88rem;padding:7px 14px;border-radius:50px;border:2px solid var(--bamboo-light)}
+
+/* ── STEP CARDS ── */
+.steps-col{display:flex;flex-direction:column;gap:18px;margin-bottom:28px}
+.step-card{background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-sm);border:2px solid transparent;display:flex;gap:0;transition:all .3s;flex-direction:row}
+.step-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--bamboo-light)}
+.step-img{width:140px;min-width:140px;height:140px;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:56px;background:linear-gradient(135deg,var(--bamboo-xlight),var(--orange-light));flex-shrink:0}
+.step-img img{width:100%;height:100%;object-fit:cover}
+.step-body{padding:20px 22px;display:flex;flex-direction:column;justify-content:center}
+.step-num-wrap{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.step-num{width:26px;height:26px;background:var(--bamboo);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;flex-shrink:0}
+.step-title{font-family:'Poppins',sans-serif;font-weight:800;font-size:.97rem;color:var(--bamboo-dark)}
+.step-desc{color:var(--text-mid);font-size:.89rem;line-height:1.6}
+
+/* Eksplorasi interaktif */
+.eksplo-box{background:linear-gradient(135deg,#FFF9E6,#FFF4D0);border-radius:var(--r);padding:28px;border:2.5px solid var(--yellow);margin-bottom:18px;text-align:center}
+.eksplo-box .ek-title{font-family:'Poppins',sans-serif;font-weight:800;font-size:1rem;color:#856000;margin-bottom:6px}
+.eksplo-box .ek-q{color:var(--text-mid);font-size:.94rem;line-height:1.6;margin-bottom:18px;font-style:italic}
+.eksplo-opts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.ek-opt{padding:11px 20px;border-radius:50px;border:2.5px solid var(--yellow);background:#fff;font-weight:800;font-size:.88rem;cursor:pointer;transition:all .25s;color:#856000}
+.ek-opt:hover{background:var(--yellow);color:#5a3c00}
+.ek-opt.hit{background:var(--yellow);color:#5a3c00;border-color:#d4a800}
+.ek-opt.miss{background:#ffe0e0;border-color:#e57373;color:#c62828}
+.ek-feedback{margin-top:14px;padding:12px 18px;border-radius:var(--r-sm);font-weight:700;font-size:.93rem;display:none}
+.ek-feedback.show{display:block;animation:slideup .3s ease}
+.ek-feedback.ok{background:#d4f0d5;color:var(--bamboo-dark)}
+.ek-feedback.no{background:#ffebeb;color:#c62828}
+
+/* ── SECTION 2 UNSUR ── */
+#akt2{background:linear-gradient(180deg,var(--cream) 0%,#EDF7ED 100%)}
+.view-tabs{display:flex;gap:10px;justify-content:center;margin-bottom:28px;flex-wrap:wrap}
+.vtab{padding:10px 24px;border-radius:50px;border:2.5px solid var(--bamboo-light);background:#fff;font-weight:800;font-size:.9rem;cursor:pointer;transition:all .25s;color:var(--text-mid)}
+.vtab.active{background:var(--bamboo);color:#fff;border-color:var(--bamboo)}
+.view-panel{display:none}
+.view-panel.show{display:block;animation:fadein .3s ease}
+.unsur-list{display:flex;flex-direction:column;gap:16px}
+.unsur-item{background:#fff;border-radius:var(--r);padding:22px 24px;box-shadow:var(--shadow-sm);border-left:5px solid var(--bamboo);display:flex;align-items:flex-start;gap:18px;transition:all .25s}
+.unsur-item:hover{transform:translateX(4px);box-shadow:var(--shadow)}
+.unsur-item.orange{border-left-color:var(--orange)}
+.unsur-item.blue{border-left-color:var(--blue)}
+.u-icon{font-size:36px;flex-shrink:0;margin-top:2px}
+.u-body{}
+.u-name{font-family:'Poppins',sans-serif;font-weight:800;font-size:1rem;color:var(--bamboo-dark);margin-bottom:3px}
+.u-name.orange{color:var(--orange)} .u-name.blue{color:var(--blue)}
+.u-sym{display:inline-block;background:var(--bamboo-light);color:var(--bamboo-dark);font-weight:900;font-size:1rem;padding:2px 12px;border-radius:6px;margin-bottom:6px;font-style:italic}
+.u-sym.orange{background:#fdebd9;color:var(--orange)} .u-sym.blue{background:var(--blue-light);color:var(--blue)}
+.u-desc{color:var(--text-mid);font-size:.88rem;line-height:1.58}
+.u-genz{display:inline-block;background:var(--yellow-light);color:#8a6000;font-weight:800;font-size:.78rem;padding:3px 10px;border-radius:50px;margin-top:5px}
+
+/* ── SECTION 3 INPUT ── */
+#akt3{background:var(--cream)}
+.hitung-intro{background:linear-gradient(135deg,var(--bamboo-dark),#2d6e32);color:#fff;border-radius:var(--r);padding:28px 32px;text-align:center;margin-bottom:28px;box-shadow:0 8px 28px rgba(47,110,50,.28);position:relative;overflow:hidden}
+.hitung-intro::before{content:'√';position:absolute;font-size:160px;font-weight:900;opacity:.07;top:-20px;right:0;pointer-events:none}
+.hi-tag{font-size:.78rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;opacity:.75;margin-bottom:10px}
+.hi-text{font-size:.97rem;line-height:1.6;opacity:.9;margin-bottom:18px}
+.rumus-big{font-family:'Poppins',sans-serif;font-size:clamp(1.6rem,5vw,2.4rem);font-weight:900;letter-spacing:.5px}
+
+.form-box{background:#fff;border-radius:var(--r);padding:32px;box-shadow:var(--shadow-sm);border:2px solid var(--bamboo-light);margin-bottom:24px}
+.form-title{font-family:'Poppins',sans-serif;font-weight:800;font-size:1rem;color:var(--bamboo-dark);margin-bottom:22px}
+.form-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:22px}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}}
+.f-group{display:flex;flex-direction:column;gap:7px}
+.f-label{font-weight:800;font-size:.83rem;color:var(--text-mid);display:flex;align-items:center;gap:6px}
+.f-sym{font-weight:900;font-style:italic;font-size:.95rem;background:var(--bamboo-light);color:var(--bamboo-dark);padding:2px 8px;border-radius:6px}
+.f-sym.orange{background:#fdebd9;color:var(--orange)}
+.f-input{padding:12px 14px;border:2.5px solid var(--bamboo-light);border-radius:var(--r-sm);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;outline:none;transition:border .2s;color:var(--text-dark);background:var(--cream)}
+.f-input:focus{border-color:var(--bamboo)}
+.f-input.error{border-color:#e57373}
+.f-unit{font-size:.8rem;font-weight:700;color:var(--text-soft)}
+
+.sync-result{background:var(--bamboo-xlight);border:2px solid var(--bamboo-light);border-radius:var(--r-sm);padding:18px 20px;font-weight:700;font-size:.95rem;color:var(--bamboo-dark);display:none;margin-top:14px;line-height:1.6}
+.sync-result.show{display:block;animation:slideup .35s ease}
+.sync-result .val{font-size:1.2rem;font-family:'Poppins',sans-serif;font-weight:900}
+
+/* ── SECTION 4 ASESMEN ── */
+#asesmen{background:linear-gradient(180deg,#EDF7ED 0%,var(--cream) 100%)}
+.locked-box{text-align:center;padding:56px 24px;background:#fff;border-radius:var(--r);box-shadow:var(--shadow-sm);border:2.5px dashed var(--bamboo-light)}
+.locked-box .lk-ico{font-size:62px;display:block;margin-bottom:14px}
+.locked-box h3{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:800;color:var(--text-mid);margin-bottom:6px}
+.locked-box p{color:var(--text-soft);font-size:.93rem;line-height:1.5}
+.quiz-wrap{display:none}
+.quiz-wrap.show{display:block;animation:fadein .4s ease}
+.qprog-bg{height:8px;background:var(--bamboo-light);border-radius:50px;overflow:hidden;margin-bottom:28px}
+.qprog-fill{height:100%;background:linear-gradient(90deg,var(--bamboo),var(--bamboo-dark));border-radius:50px;transition:width .5s ease}
+.qcard{background:#fff;border-radius:var(--r);padding:30px;box-shadow:var(--shadow);border:2px solid var(--bamboo-light)}
+.qmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:8px}
+.qnum{font-family:'Poppins',sans-serif;font-weight:800;font-size:.82rem;color:var(--bamboo-dark);background:var(--bamboo-light);padding:5px 13px;border-radius:50px}
+.qtimer{display:flex;align-items:center;gap:5px;background:#fff4e0;color:var(--orange);font-weight:900;font-size:.92rem;padding:5px 13px;border-radius:50px;border:2px solid #ffd080;min-width:76px;justify-content:center}
+.qtimer.urgent{background:#ffebeb;color:#c62828;border-color:#e57373;animation:pulse .5s ease infinite}
+.qq{font-weight:700;font-size:.97rem;color:var(--text-dark);line-height:1.7;margin-bottom:22px;padding:16px 18px;background:var(--cream);border-radius:var(--r-sm);border-left:4px solid var(--bamboo)}
+.qopts{display:flex;flex-direction:column;gap:9px}
+.qopt{display:flex;align-items:center;gap:11px;padding:13px 16px;border-radius:var(--r-sm);border:2.5px solid var(--bamboo-light);cursor:pointer;transition:all .2s;font-weight:700;font-size:.93rem;background:#fff}
+.qopt:hover{border-color:var(--bamboo);background:var(--bamboo-xlight)}
+.qopt.sel{border-color:var(--bamboo-dark);background:#d4f0d5}
+.qopt.wrong{border-color:#e57373;background:#ffebeb}
+.qopt.reveal{border-color:var(--bamboo-dark);background:#d4f0d5}
+.qopt.disabled{pointer-events:none}
+.qletter{width:27px;height:27px;border-radius:50%;background:var(--bamboo-light);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.82rem;color:var(--bamboo-dark);flex-shrink:0}
+.qfb{margin-top:14px;padding:13px 16px;border-radius:var(--r-sm);font-weight:700;font-size:.92rem;display:none}
+.qfb.show{display:block;animation:slideup .3s ease}
+.qfb.ok{background:#d4f0d5;color:var(--bamboo-dark)} .qfb.no{background:#ffebeb;color:#c62828}
+.qnext{display:none;margin-top:18px;width:100%;padding:13px;background:linear-gradient(135deg,var(--bamboo),var(--bamboo-dark));color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:.93rem;border:none;border-radius:50px;cursor:pointer;transition:all .3s;box-shadow:0 4px 14px rgba(74,138,79,.28)}
+.qnext.show{display:block;animation:fadein .3s ease}
+.qnext:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(74,138,79,.38)}
+
+/* ── HASIL ── */
+#hasil{background:var(--cream);display:none}
+#hasil.show{display:block;animation:fadein .5s ease}
+.hasil-card{background:#fff;border-radius:var(--r);padding:48px 36px;box-shadow:var(--shadow);text-align:center;max-width:580px;margin:0 auto}
+.h-emo{font-size:76px;display:block;margin-bottom:18px;animation:bounce 1s ease}
+.h-score{font-family:'Poppins',sans-serif;font-size:clamp(2.8rem,9vw,4.8rem);font-weight:900;color:var(--bamboo-dark);line-height:1;margin-bottom:4px}
+.h-lbl{font-size:.87rem;color:var(--text-soft);font-weight:700;margin-bottom:18px}
+.h-pesan{font-family:'Poppins',sans-serif;font-size:1.18rem;font-weight:800;color:var(--bamboo-dark);margin-bottom:6px}
+.h-name{font-size:.95rem;color:var(--text-mid);margin-bottom:28px}
+.h-stat{display:flex;gap:14px;justify-content:center;margin-bottom:28px;flex-wrap:wrap}
+.h-si{background:var(--cream);border-radius:var(--r-sm);padding:13px 20px;text-align:center}
+.h-sv{font-family:'Poppins',sans-serif;font-weight:900;font-size:1.45rem;color:var(--bamboo-dark)}
+.h-sl{font-size:.78rem;color:var(--text-soft);font-weight:700}
+.h-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* ── CONFETTI ── */
+.cfp{position:fixed;width:10px;height:14px;top:-20px;border-radius:2px;pointer-events:none;z-index:9999;animation:confetti 3.2s ease forwards}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .55s ease,transform .55s ease}
+.reveal.vis{opacity:1;transform:translateY(0)}
+
+/* ── KEYFRAMES ── */
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes fdin{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fdup{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+@keyframes confetti{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+@media(max-width:640px){
+  .step-card{flex-direction:column}
+  .step-img{width:100%;min-width:unset;height:130px}
+  .nav-menu{gap:1px}
+  .nbtn{padding:5px 7px;font-size:11px}
+}
+@media(max-width:480px){
+  .nbtn .btn-txt{display:none}
+  .nbtn{font-size:15px;padding:6px 8px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a class="nav-brand" href="#landing">
+    <div class="nav-logo">🎓</div>
+    <div class="nav-title">Lab <span>Etno</span>Math</div>
+  </a>
+  <div class="nav-menu">
+    <button class="nbtn active" id="nb0" onclick="goTo('landing')">🏠 <span class="btn-txt">Beranda</span></button>
+    <button class="nbtn" id="nb1" onclick="goTo('akt1')">✂️ <span class="btn-txt">Aktivitas 1</span></button>
+    <button class="nbtn" id="nb2" onclick="goTo('akt2')">🔍 <span class="btn-txt">Aktivitas 2</span></button>
+    <button class="nbtn" id="nb3" onclick="goTo('akt3')">🔢 <span class="btn-txt">Aktivitas 3</span></button>
+    <button class="nbtn locked" id="nb4" onclick="tryAsesmen()">🔒 <span class="btn-txt">Asesmen</span></button>
+  </div>
+  <div class="nav-right">
+    <div class="prog-wrap" id="prog-wrap">
+      <div class="prog-lbl" id="prog-lbl">0%</div>
+      <div class="prog-bg"><div class="prog-fill" id="prog-fill"></div></div>
+    </div>
+    <div class="nav-uname" id="nav-uname"></div>
+  </div>
+</nav>
+
+<!-- MODAL NAMA -->
+<div class="overlay" id="modal-overlay">
+  <div class="modal">
+    <span class="moji">👋</span>
+    <h3>Halo, Penjelajah Budaya!</h3>
+    <p>Sebelum petualangan dimulai, siapa namamu? Kami ingin menyapamu secara personal! 🌿</p>
+    <input type="text" id="inp-nama" placeholder="Ketik nama kamu di sini..." maxlength="40">
+    <div class="m-actions">
+      <button class="btn-g" onclick="submitNama()" style="flex:1">Mulai Berkreasi! 🚀</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LANDING ===== -->
+<section id="landing">
+  <div class="l-deco d1"></div><div class="l-deco d2"></div><div class="l-deco d3"></div>
+  <div class="l-content">
+    <div class="badge">🌾 Etnomatematika · Kelas IX Fase D</div>
+    <h1 class="l-title"><span style="color:var(--bamboo-dark)">Lab Etno</span><span style="color:var(--orange)">Math</span></h1>
+    <p class="l-title" style="font-family:'Poppins',sans-serif;font-size:clamp(1rem,2.5vw,1.3rem);font-weight:700;color:var(--brown);margin-top:4px">Arsitek Caping Cilik</p>
+    <p class="tagline">✨ Mengungkap Rahasia Kerucut pada Caping! ✨</p>
+    <p class="l-sub">Halo, para Penjelajah Budaya! Mari membuktikan bahwa matematika bukan hanya soal angka di kertas, tapi soal bagaimana kita merancang alat untuk mempermudah hidup manusia! 🌿</p>
+    <span class="hero-icon">🧢</span>
+    <div class="cta-wrap">
+      <button class="btn-g" onclick="openModal()">Mulai Berkreasi 🚀</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== AKTIVITAS 1 ===== -->
+<section id="akt1" style="background:linear-gradient(180deg,#EDF7ED 0%,var(--cream) 100%)">
+  <div class="swrap">
+    <div class="shdr reveal">
+      <div class="stag stag-g">✂️ Aktivitas 1</div>
+      <h2 class="stitle">Ayo Buat <span class="co">Capingmu!</span></h2>
+      <p class="sdesc">Ikuti langkah-langkah berikut untuk membuat model caping dari kertas Asturo. Siapkan alat dan bahan dulu, ya! 🌟</p>
+    </div>
+
+    <!-- ALAT BAHAN -->
+    <div class="ab-box reveal">
+      <div class="ab-title">🛠️ Alat &amp; Bahan yang Dibutuhkan</div>
+      <ul class="ab-list">
+        <li class="ab-item">📄 Kertas asturo/manila 50cm × 50cm</li>
+        <li class="ab-item">✂️ Gunting</li>
+        <li class="ab-item">📏 Penggaris</li>
+        <li class="ab-item">🔘 Jangka</li>
+        <li class="ab-item">🔗 Lem kertas / double tape</li>
+      </ul>
+    </div>
+
+    <!-- LANGKAH-LANGKAH -->
+    <div class="steps-col">
+
+      <div class="step-card reveal">
+        <div class="step-img">
+          <img src="https://images.unsplash.com/photo-1604367233958-087f7958e63b?w=280&h=140&fit=crop&q=80" alt="Kertas diagonal" onerror="this.style.display='none';this.parentNode.innerHTML='📐'">
+        </div>
+        <div class="step-body">
+          <div class="step-num-wrap"><div class="step-num">1</div><div class="step-title">Cari Titik Tengah</div></div>
+          <div class="step-desc">Ambil kertas Asturo ukuran <strong>50 cm × 50 cm</strong>. Cari titik tengah dengan cara melipat kedua diagonal kertas — perpotongan kedua diagonal adalah titik tengah kertas tersebut.</div>
+        </div>
+      </div>
+
+      <div class="step-card reveal">
+        <div class="step-img">
+          <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=280&h=140&fit=crop&q=80" alt="Membuat lingkaran" onerror="this.style.display='none';this.parentNode.innerHTML='⭕'">
+        </div>
+        <div class="step-body">
+          <div class="step-num-wrap"><div class="step-num">2</div><div class="step-title">Buat Lingkaran</div></div>
+          <div class="step-desc">Buat lingkaran dengan jari-jari bebas (<strong>minimal 30 cm, maksimal 40 cm</strong>) menggunakan jangka. Buat juga garis jari-jari lingkaran pada salah satu sisi sebagai panduan pemotongan.</div>
+        </div>
+      </div>
+
+      <div class="step-card reveal">
+        <div class="step-img">
+          <img src="https://images.unsplash.com/photo-1609220136736-443140cffec6?w=280&h=140&fit=crop&q=80" alt="Memotong kertas" onerror="this.style.display='none';this.parentNode.innerHTML='✂️'">
+        </div>
+        <div class="step-body">
+          <div class="step-num-wrap"><div class="step-num">3</div><div class="step-title">Potong Kertas</div></div>
+          <div class="step-desc">Potong lingkaran tersebut mengikuti garis, lalu potong juga garis jari-jari yang sudah dibuat tadi sehingga kamu mendapatkan sebuah "kipas" lingkaran yang siap dibentuk.</div>
+        </div>
+      </div>
+
+      <!-- EKSPLORASI INTERAKTIF -->
+      <div class="eksplo-box reveal">
+        <div class="ek-title">🤔 Eits, Jangan di-lem dulu!</div>
+        <div class="ek-q">"Cobalah geser tumpukannya lebih dalam, apa yang terjadi pada capingnya? Bagaimana tinggi capingnya?"</div>
+        <div class="eksplo-opts">
+          <div class="ek-opt" onclick="jawabEksplo(this, true)">📐 Makin Menciut &amp; Makin Tinggi</div>
+          <div class="ek-opt" onclick="jawabEksplo(this, false)">📏 Makin Lebar &amp; Makin Pendek</div>
+        </div>
+        <div class="ek-feedback" id="ek-fb"></div>
+      </div>
+
+      <div class="step-card reveal">
+        <div class="step-img">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=280&h=140&fit=crop&q=80" alt="Kerucut jadi" onerror="this.style.display='none';this.parentNode.innerHTML='🎉'">
+        </div>
+        <div class="step-body">
+          <div class="step-num-wrap"><div class="step-num">4 &amp; 5</div><div class="step-title">Tekuk &amp; Rekatkan</div></div>
+          <div class="step-desc">Tekuk salah satu sudut lingkaran sehingga membentuk kerucut mirip caping. Lem bagian kerucut yang saling tumpuk agar tidak terlepas. <strong>Capingmu siap!</strong> 🎉 Coba ukur jari-jari, tinggi, dan garis pelukisnya.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="reveal" style="text-align:center">
+      <button class="btn-o" onclick="goTo('akt2')">Lanjut ke Aktivitas 2 🔍</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== AKTIVITAS 2 ===== -->
+<section id="akt2">
+  <div class="swrap">
+    <div class="shdr reveal">
+      <div class="stag stag-b">🔍 Aktivitas 2</div>
+      <h2 class="stitle">Bedah <span class="cg">Arsitektur</span> Caping</h2>
+      <p class="sdesc">Berdasarkan caping yang baru kamu buat, mari kenali unsur-unsur kerucut yang tersembunyi di dalamnya! 🧐</p>
+    </div>
+
+    <div class="view-tabs reveal">
+      <div class="vtab active" onclick="switchTab('samping')">👁️ Tampak Samping</div>
+      <div class="vtab" onclick="switchTab('bawah')">⬇️ Tampak Bawah</div>
+    </div>
+
+    <div class="view-panel show" id="panel-samping">
+      <div class="unsur-list">
+        <div class="unsur-item reveal">
+          <div class="u-icon">🔺</div>
+          <div class="u-body">
+            <div class="u-name">Titik Puncak</div>
+            <div class="u-genz">Si Paling Pucuk 👑</div>
+            <div class="u-desc" style="margin-top:7px">Titik di ujung paling atas caping — ibarat "puncak gunung" dari kerucut. Dari sinilah semua garis pelukis berawal!</div>
+          </div>
+        </div>
+        <div class="unsur-item orange reveal">
+          <div class="u-icon">📏</div>
+          <div class="u-body">
+            <div class="u-name orange">Garis Pelukis</div>
+            <div class="u-sym orange">s</div>
+            <div class="u-genz">Sisi Miring yang Cool 😎</div>
+            <div class="u-desc" style="margin-top:7px">Garis miring yang membentang dari titik puncak sampai ke ujung bawah caping. Ingat, <em>s</em> ini adalah panjang kertas aslinya sebelum kamu tekuk jadi caping!</div>
+          </div>
+        </div>
+        <div class="unsur-item blue reveal">
+          <div class="u-icon">📐</div>
+          <div class="u-body">
+            <div class="u-name blue">Tinggi Kerucut</div>
+            <div class="u-sym blue">t</div>
+            <div class="u-genz">Tiang Penyangga Rahasia 🤫</div>
+            <div class="u-desc" style="margin-top:7px">Garis tegak lurus yang "ngumpet" di dalam ruangan kerucut — dari titik puncak turun tegak lurus ke titik pusat tengah alas. Susah diukur langsung? Tenang, ada rumus-nya!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="view-panel" id="panel-bawah">
+      <div class="unsur-list">
+        <div class="unsur-item reveal">
+          <div class="u-icon">⭕</div>
+          <div class="u-body">
+            <div class="u-name">Keliling Alas</div>
+            <div class="u-genz">Si Sabuk Lingkaran 💫</div>
+            <div class="u-desc" style="margin-top:7px">Garis melingkar di tepian bawah caping — sabuk yang melingkari seluruh alas kerucut. Semakin besar, semakin lebar capingnya!</div>
+          </div>
+        </div>
+        <div class="unsur-item orange reveal">
+          <div class="u-icon">🎯</div>
+          <div class="u-body">
+            <div class="u-name orange">Jari-jari Alas</div>
+            <div class="u-sym orange">r</div>
+            <div class="u-genz">Jembatan ke Pinggir 🌉</div>
+            <div class="u-desc" style="margin-top:7px">Jarak dari titik paling tengah alas (pusat bawah) lurus menabrak pinggiran lingkaran. Ini menentukan seberapa lebar lubang caping agar muat di kepala!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal" style="text-align:center;margin-top:36px">
+      <button class="btn-o" onclick="goTo('akt3')">Lanjut ke Aktivitas 3 🔢</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== AKTIVITAS 3 ===== -->
+<section id="akt3">
+  <div class="swrap">
+    <div class="shdr reveal">
+      <div class="stag stag-y">🔢 Aktivitas 3</div>
+      <h2 class="stitle">Hitung <span class="cg">Mandiri</span> &amp; Sinkronkan!</h2>
+      <p class="sdesc">Masukkan hasil pengukuran caping buatanmu, lalu biarkan matematika bekerja! 🧮</p>
+    </div>
+
+    <div class="hitung-intro reveal">
+      <div class="hi-tag">💡 Tahukah Kamu?</div>
+      <div class="hi-text">Ternyata kita bisa lho mencari tinggi caping <em>tanpa harus mengukur</em>, dengan menggunakan rumus Pythagoras!</div>
+      <div class="rumus-big">t = √(s² – r²)</div>
+    </div>
+
+    <div class="form-box reveal">
+      <div class="form-title">📝 Masukkan Hasil Pengukuranmu</div>
+      <div class="form-row">
+        <div class="f-group">
+          <div class="f-label"><span class="f-sym orange">s</span> Garis Pelukis</div>
+          <input type="number" class="f-input" id="inp-s" placeholder="contoh: 35" min="1" max="200">
+          <div class="f-unit">satuan: cm</div>
+        </div>
+        <div class="f-group">
+          <div class="f-label"><span class="f-sym">r</span> Jari-jari Alas</div>
+          <input type="number" class="f-input" id="inp-r" placeholder="contoh: 20" min="1" max="200">
+          <div class="f-unit">satuan: cm</div>
+        </div>
+        <div class="f-group">
+          <div class="f-label"><span class="f-sym" style="background:var(--blue-light);color:var(--blue)">t</span> Tinggi (Ukur Manual)</div>
+          <input type="number" class="f-input" id="inp-t" placeholder="contoh: 28" min="1" max="200">
+          <div class="f-unit">satuan: cm</div>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <button class="btn-g" onclick="sinkronkan()">⚡ Sinkronkan dengan Rumus!</button>
+      </div>
+      <div class="sync-result" id="sync-result"></div>
+    </div>
+
+    <div class="reveal" style="text-align:center">
+      <button class="btn-o btn-disabled" id="btn-ke-asesmen" onclick="goTo('asesmen')">Lanjut ke Asesmen Sumatif 🏆</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ASESMEN ===== -->
+<section id="asesmen">
+  <div class="swrap">
+    <div class="shdr reveal">
+      <div class="stag stag-br">🏆 Asesmen Sumatif</div>
+      <h2 class="stitle">Kuis <span class="co">Etnomatematika</span></h2>
+      <p class="sdesc">Uji pemahamanmu dengan soal cerita seru berbasis budaya lokal! Setiap soal punya waktu 60 detik. ⏱️</p>
+    </div>
+
+    <div class="locked-box" id="locked-box">
+      <span class="lk-ico">🔒</span>
+      <h3>Kuis Masih Terkunci</h3>
+      <p>Selesaikan <strong>Aktivitas 3</strong> dulu — isi pengukuran capingmu dan klik <strong>"Sinkronkan dengan Rumus!"</strong> untuk membuka kuis ini. 🔑</p>
+    </div>
+
+    <div class="quiz-wrap" id="quiz-wrap">
+      <div class="qprog-bg"><div class="qprog-fill" id="qprog" style="width:0%"></div></div>
+      <div class="qcard" id="qcard">
+        <div class="qmeta">
+          <div class="qnum" id="qnum">Soal 1 / 3</div>
+          <div class="qtimer" id="qtimer">⏱ 60</div>
+        </div>
+        <div class="qq" id="qq"></div>
+        <div class="qopts" id="qopts"></div>
+        <div class="qfb" id="qfb"></div>
+        <button class="qnext" id="qnext" onclick="nextQ()">Soal Berikutnya →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HASIL ===== -->
+<section id="hasil">
+  <div class="swrap">
+    <div class="hasil-card">
+      <span class="h-emo" id="h-emo">🏆</span>
+      <div class="h-score" id="h-score">0</div>
+      <div class="h-lbl">dari 100 poin</div>
+      <div class="h-pesan" id="h-pesan">–</div>
+      <div class="h-name" id="h-name">–</div>
+      <div class="h-stat">
+        <div class="h-si"><div class="h-sv" id="h-benar">0</div><div class="h-sl">Soal Benar</div></div>
+        <div class="h-si"><div class="h-sv" id="h-salah">0</div><div class="h-sl">Soal Salah</div></div>
+        <div class="h-si"><div class="h-sv">3</div><div class="h-sl">Total Soal</div></div>
+      </div>
+      <div class="h-acts">
+        <button class="btn-g" onclick="window.print()">🖨️ Unduh Hasil</button>
+        <button class="btn-o" onclick="ulangiKuis()">🔄 Ulangi Kuis</button>
+        <button class="btn-line" onclick="goTo('landing')">🏠 Beranda</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+/* =========================================================
+   STATE
+   ========================================================= */
+let namaUser = '';
+let asesmenUnlocked = false;
+let progVal = 0;
+
+/* =========================================================
+   PROGRESS
+   ========================================================= */
+function setProgress(v){
+  progVal = Math.min(100, Math.max(progVal, v));
+  document.getElementById('prog-fill').style.width = progVal + '%';
+  document.getElementById('prog-lbl').textContent = progVal + '%';
+}
+
+/* =========================================================
+   MODAL & NAMA
+   ========================================================= */
+function openModal(){ document.getElementById('modal-overlay').classList.add('show'); setTimeout(()=>document.getElementById('inp-nama').focus(),120); }
+function submitNama(){
+  const v = document.getElementById('inp-nama').value.trim();
+  if(!v){ document.getElementById('inp-nama').style.borderColor='#e57373'; document.getElementById('inp-nama').focus(); return; }
+  namaUser = v;
+  document.getElementById('modal-overlay').classList.remove('show');
+  const un = document.getElementById('nav-uname');
+  un.textContent = '👤 ' + namaUser; un.style.display='block';
+  document.getElementById('prog-wrap').style.display='flex';
+  setProgress(10);
+  goTo('akt1');
+}
+document.getElementById('inp-nama').addEventListener('keydown', e=>{ if(e.key==='Enter') submitNama(); });
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+const navMap = { landing:'nb0', akt1:'nb1', akt2:'nb2', akt3:'nb3', asesmen:'nb4', hasil:'nb4' };
+function goTo(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  if(id==='asesmen' && !asesmenUnlocked){ tryAsesmen(); return; }
+  el.scrollIntoView({behavior:'smooth'});
+  setActiveNav(id);
+}
+function setActiveNav(id){
+  document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('active'));
+  const k = navMap[id];
+  if(k){ const b=document.getElementById(k); if(b && !b.classList.contains('locked')) b.classList.add('active'); }
+}
+function tryAsesmen(){
+  if(asesmenUnlocked){ goTo('asesmen'); return; }
+  const btn = document.getElementById('nb4');
+  btn.animate([{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(-4px)'},{transform:'translateX(0)'}],{duration:300});
+  goTo('akt3');
+}
+window.addEventListener('scroll',()=>{
+  const ids=['landing','akt1','akt2','akt3','asesmen'];
+  let cur='landing';
+  ids.forEach(id=>{ const el=document.getElementById(id); if(el && window.scrollY>=el.offsetTop-90) cur=id; });
+  setActiveNav(cur);
+});
+
+/* =========================================================
+   EKSPLORASI INTERAKTIF (AKT 1)
+   ========================================================= */
+let eksploDone = false;
+function jawabEksplo(el, benar){
+  if(eksploDone) return;
+  eksploDone = true;
+  document.querySelectorAll('.ek-opt').forEach(o=>o.style.pointerEvents='none');
+  const fb = document.getElementById('ek-fb');
+  if(benar){
+    el.classList.add('hit');
+    fb.className='ek-feedback show ok';
+    fb.textContent = '🎉 Tepat sekali! Semakin dalam tumpukan kertas, jari-jari alas (r) semakin kecil tapi tinggi (t) semakin besar — dan garis pelukis (s) tetap sama (= jari-jari lingkaran kertas)! Kamu sudah menemukan hubungan antara s, r, dan t tanpa rumus!';
+  } else {
+    el.classList.add('miss');
+    const benarEl = document.querySelectorAll('.ek-opt')[0];
+    benarEl.classList.add('hit');
+    fb.className='ek-feedback show no';
+    fb.textContent = '😅 Hampir! Coba lagi perhatikan — saat tumpukan makin dalam, capingnya justru makin ramping (menciut) dan makin tinggi, bukan melebar. Yuk amati lagi capingmu!';
+  }
+  setProgress(20);
+}
+
+/* =========================================================
+   TAB TAMPAK (AKT 2)
+   ========================================================= */
+function switchTab(which){
+  document.querySelectorAll('.vtab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.view-panel').forEach(p=>p.classList.remove('show'));
+  event.target.classList.add('active');
+  document.getElementById('panel-'+which).classList.add('show');
+  setProgress(35);
+}
+
+/* =========================================================
+   SINKRONKAN (AKT 3)
+   ========================================================= */
+function sinkronkan(){
+  const sEl=document.getElementById('inp-s'), rEl=document.getElementById('inp-r'), tEl=document.getElementById('inp-t');
+  [sEl,rEl,tEl].forEach(e=>e.classList.remove('error'));
+  const s=parseFloat(sEl.value), r=parseFloat(rEl.value), t=parseFloat(tEl.value);
+  let ok=true;
+  if(!s||s<=0){sEl.classList.add('error');ok=false;}
+  if(!r||r<=0){rEl.classList.add('error');ok=false;}
+  if(!t||t<=0){tEl.classList.add('error');ok=false;}
+  if(!ok){
+    const sr=document.getElementById('sync-result');
+    sr.className='sync-result show';sr.style.background='#ffebeb';sr.style.borderColor='#e57373';sr.style.color='#c62828';
+    sr.textContent='⚠️ Lengkapi semua nilai terlebih dahulu ya!';
+    return;
+  }
+  if(r>=s){
+    const sr=document.getElementById('sync-result');
+    sr.className='sync-result show';sr.style.background='#ffebeb';sr.style.borderColor='#e57373';sr.style.color='#c62828';
+    sr.textContent='⚠️ Nilai jari-jari (r) harus lebih kecil dari garis pelukis (s) agar rumus valid!';
+    return;
+  }
+  const tHitung = Math.sqrt(s*s - r*r);
+  const tRound = Math.round(tHitung*100)/100;
+  const selisih = Math.abs(tHitung - t);
+  const persen = Math.round((selisih/t)*100);
+
+  const sr=document.getElementById('sync-result');
+  sr.style.background='';sr.style.borderColor='';sr.style.color='';
+  sr.className='sync-result show';
+
+  let msg='';
+  if(persen<=15){
+    msg=`🎉 <strong>Wow!</strong> Hasil hitung rumus adalah <span class="val">${tRound} cm</span>, sangat dekat dengan ukur manualmu (${t} cm)! Selisihnya hanya ~${persen}% — itulah kehebatan Pythagoras! ✨`;
+  } else {
+    msg=`🔍 Hasil rumus adalah <span class="val">${tRound} cm</span>, sementara ukur manualmu ${t} cm (selisih ~${persen}%). Perbedaan ini wajar karena keterbatasan alat ukur — matematika tetap valid! 💪`;
+  }
+  sr.innerHTML = msg;
+
+  // Unlock asesmen
+  unlockAsesmen();
+  setProgress(60);
+
+  // enable next button
+  document.getElementById('btn-ke-asesmen').classList.remove('btn-disabled');
+}
+
+function unlockAsesmen(){
+  if(asesmenUnlocked) return;
+  asesmenUnlocked = true;
+  const nb = document.getElementById('nb4');
+  nb.classList.remove('locked');
+  nb.innerHTML = '🏆 <span class="btn-txt">Asesmen</span>';
+  document.getElementById('locked-box').style.display='none';
+  document.getElementById('quiz-wrap').classList.add('show');
+  initQuiz();
+}
+
+/* =========================================================
+   QUIZ DATA
+   ========================================================= */
+const quizData = [
+  {
+    q: "Pak Budi seorang petani membuat caping bambu untuk bekerja di sawah. Jari-jari lubang alas caping (r) = 16 cm dan tinggi caping (t) = 12 cm. Berapa panjang garis pelukis (s) anyaman bambu yang harus dipotong Pak Budi?",
+    opts: ["A. 18 cm","B. 20 cm","C. 24 cm","D. 28 cm"],
+    key: 1
+  },
+  {
+    q: "Ibu mencetak nasi tumpeng (berbentuk kerucut) untuk perayaan syukuran. Panjang garis pelukis (s) = 25 cm dan tinggi tumpeng (t) = 24 cm. Berapa diameter nampan bulat minimal yang diperlukan agar alas tumpeng muat sempurna?",
+    opts: ["A. 7 cm","B. 10 cm","C. 14 cm","D. 20 cm"],
+    key: 2
+  },
+  {
+    q: "Sebuah model caping memiliki perbandingan panjang jari-jari alas dan tinggi yaitu r : t = 3 : 4. Jika panjang garis pelukisnya (s) adalah 20 cm, tentukan ukuran tinggi pasti kerucut tersebut!",
+    opts: ["A. 12 cm","B. 15 cm","C. 16 cm","D. 18 cm"],
+    key: 2
+  }
+];
+
+let qIdx=0, qScore=0, qTimer=null, qTimeLeft=60, qAnswered=false, qResults=[];
+
+function initQuiz(){
+  qIdx=0; qScore=0; qResults=[];
+  renderQ();
+}
+function renderQ(){
+  if(qIdx>=quizData.length){ showHasil(); return; }
+  const d=quizData[qIdx];
+  document.getElementById('qnum').textContent=`Soal ${qIdx+1} / ${quizData.length}`;
+  document.getElementById('qq').textContent=d.q;
+  document.getElementById('qprog').style.width=((qIdx/quizData.length)*100)+'%';
+  const oc=document.getElementById('qopts');
+  oc.innerHTML='';
+  d.opts.forEach((o,i)=>{
+    const div=document.createElement('div');
+    div.className='qopt';
+    div.innerHTML=`<div class="qletter">${String.fromCharCode(65+i)}</div>${o.slice(3)}`;
+    div.onclick=()=>jawabQ(i,div);
+    oc.appendChild(div);
+  });
+  document.getElementById('qfb').className='qfb';
+  document.getElementById('qnext').className='qnext';
+  document.getElementById('qtimer').className='qtimer';
+  qAnswered=false;
+  startTimer();
+}
+function startTimer(){
+  clearInterval(qTimer);
+  qTimeLeft=60; updTimer();
+  qTimer=setInterval(()=>{ qTimeLeft--; updTimer();
+    if(qTimeLeft<=10) document.getElementById('qtimer').classList.add('urgent');
+    if(qTimeLeft<=0){ clearInterval(qTimer); if(!qAnswered) timeUp(); }
+  },1000);
+}
+function updTimer(){ document.getElementById('qtimer').textContent='⏱ '+qTimeLeft; }
+function timeUp(){
+  qAnswered=true;
+  document.querySelectorAll('.qopt').forEach((o,i)=>{ o.classList.add('disabled'); if(i===quizData[qIdx].key) o.classList.add('reveal'); });
+  const fb=document.getElementById('qfb'); fb.className='qfb show no';
+  fb.textContent='⏰ Waktu habis! Jawaban yang benar sudah ditandai. Tetap semangat!';
+  qResults.push(false);
+  const nb=document.getElementById('qnext'); nb.className='qnext show';
+  nb.textContent = qIdx>=quizData.length-1 ? 'Lihat Hasil 🏆' : 'Soal Berikutnya →';
+}
+function jawabQ(idx, el){
+  if(qAnswered) return;
+  qAnswered=true; clearInterval(qTimer);
+  document.querySelectorAll('.qopt').forEach(o=>o.classList.add('disabled'));
+  const benar=idx===quizData[qIdx].key;
+  const fb=document.getElementById('qfb');
+  if(benar){ el.classList.add('sel'); fb.className='qfb show ok'; fb.textContent='🎉 Jawaban benar! Kamu keren sekali! 🌟'; qScore++; qResults.push(true); }
+  else { el.classList.add('wrong'); document.querySelectorAll('.qopt')[quizData[qIdx].key].classList.add('reveal'); fb.className='qfb show no'; fb.textContent='😅 Belum tepat. Perhatikan kembali jawaban yang benar ya!'; qResults.push(false); }
+  const nb=document.getElementById('qnext'); nb.className='qnext show';
+  nb.textContent = qIdx>=quizData.length-1 ? 'Lihat Hasil 🏆' : 'Soal Berikutnya →';
+}
+function nextQ(){ qIdx++; clearInterval(qTimer); document.getElementById('qtimer').classList.remove('urgent'); renderQ(); }
+
+/* =========================================================
+   HASIL
+   ========================================================= */
+function showHasil(){
+  clearInterval(qTimer);
+  const benar=qResults.filter(Boolean).length, salah=quizData.length-benar;
+  const skor=Math.round((benar/quizData.length)*100);
+  setProgress(100);
+  document.getElementById('h-score').textContent=skor;
+  document.getElementById('h-benar').textContent=benar;
+  document.getElementById('h-salah').textContent=salah;
+  document.getElementById('h-name').textContent = namaUser ? 'Hai, '+namaUser+'! 🌟' : '';
+  let emo,pesan;
+  if(skor>=86){emo='🏆';pesan='Sangat Baik! Kamu Ahli Pembuat Caping!';}
+  else if(skor>=70){emo='🥳';pesan='Baik! Konsepmu sudah mantap!';}
+  else if(skor>=55){emo='👍';pesan='Cukup! Mari berlatih lebih teliti lagi!';}
+  else{emo='📚';pesan='Perlu Bimbingan. Jangan menyerah, baca materi lagi ya!';}
+  document.getElementById('h-emo').textContent=emo;
+  document.getElementById('h-pesan').textContent=pesan;
+  document.getElementById('asesmen').style.display='none';
+  const hr=document.getElementById('hasil'); hr.classList.add('show'); hr.scrollIntoView({behavior:'smooth'});
+  if(skor>=70) launchConfetti();
+}
+function ulangiKuis(){
+  qIdx=0;qScore=0;qResults=[];
+  document.getElementById('hasil').classList.remove('show');
+  document.getElementById('hasil').style.display='none';
+  document.getElementById('asesmen').style.display='';
+  document.getElementById('quiz-wrap').classList.add('show');
+  renderQ();
+  goTo('asesmen');
+}
+
+/* =========================================================
+   CONFETTI
+   ========================================================= */
+function launchConfetti(){
+  const cl=['#82B878','#E07030','#F0C040','#4A90C4','#9C6B3C','#FF9800'];
+  for(let i=0;i<65;i++) setTimeout(()=>{
+    const e=document.createElement('div'); e.className='cfp';
+    e.style.left=Math.random()*100+'vw';
+    e.style.background=cl[Math.floor(Math.random()*cl.length)];
+    e.style.animationDuration=(2+Math.random()*2)+'s';
+    e.style.animationDelay=Math.random()*.5+'s';
+    e.style.transform=`rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(e);
+    setTimeout(()=>e.remove(),4500);
+  },i*38);
+}
+
+/* =========================================================
+   SCROLL REVEAL
+   ========================================================= */
+const ro=new IntersectionObserver(entries=>entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('vis'); }),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+</script>
+</body>
+</html>
